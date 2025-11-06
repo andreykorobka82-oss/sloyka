@@ -174,7 +174,7 @@ const ExpenseArchive = ({ user, onLogout }) => {
                             <Button
                               variant="destructive"
                               size="sm"
-                              onClick={() => handleDelete(expense.id)}
+                              onClick={() => handleDelete(expense.id, expense.product_name)}
                               data-testid={`delete-expense-${expense.id}`}
                             >
                               Видалити
