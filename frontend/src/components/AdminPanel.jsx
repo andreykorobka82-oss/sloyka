@@ -48,6 +48,8 @@ const AdminPanel = ({ user, onLogout }) => {
   const [users, setUsers] = useState([]);
   const [categories, setCategories] = useState([]);
   const [products, setProducts] = useState([]);
+  const [sortField, setSortField] = useState('name');
+  const [sortDirection, setSortDirection] = useState('asc');
   const [loading, setLoading] = useState(true);
 
   // Form states
