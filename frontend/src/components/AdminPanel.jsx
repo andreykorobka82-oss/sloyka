@@ -434,15 +434,71 @@ const AdminPanel = ({ user, onLogout }) => {
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Назва</TableHead>
-                      <TableHead>Категорія</TableHead>
-                      <TableHead>Вартість</TableHead>
-                      <TableHead>Залишок</TableHead>
+                      <TableHead>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleSort('name')}
+                          className="h-8 px-2"
+                          data-testid="sort-by-name"
+                        >
+                          Назва
+                          {sortField === 'name' && (
+                            sortDirection === 'asc' ? <ArrowUp className="ml-2 h-4 w-4" /> : <ArrowDown className="ml-2 h-4 w-4" />
+                          )}
+                          {sortField !== 'name' && <ArrowUpDown className="ml-2 h-4 w-4 opacity-50" />}
+                        </Button>
+                      </TableHead>
+                      <TableHead>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleSort('category')}
+                          className="h-8 px-2"
+                          data-testid="sort-by-category"
+                        >
+                          Категорія
+                          {sortField === 'category' && (
+                            sortDirection === 'asc' ? <ArrowUp className="ml-2 h-4 w-4" /> : <ArrowDown className="ml-2 h-4 w-4" />
+                          )}
+                          {sortField !== 'category' && <ArrowUpDown className="ml-2 h-4 w-4 opacity-50" />}
+                        </Button>
+                      </TableHead>
+                      <TableHead>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleSort('price')}
+                          className="h-8 px-2"
+                          data-testid="sort-by-price"
+                        >
+                          Вартість
+                          {sortField === 'price' && (
+                            sortDirection === 'asc' ? <ArrowUp className="ml-2 h-4 w-4" /> : <ArrowDown className="ml-2 h-4 w-4" />
+                          )}
+                          {sortField !== 'price' && <ArrowUpDown className="ml-2 h-4 w-4 opacity-50" />}
+                        </Button>
+                      </TableHead>
+                      <TableHead>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleSort('stock')}
+                          className="h-8 px-2"
+                          data-testid="sort-by-stock"
+                        >
+                          Залишок
+                          {sortField === 'stock' && (
+                            sortDirection === 'asc' ? <ArrowUp className="ml-2 h-4 w-4" /> : <ArrowDown className="ml-2 h-4 w-4" />
+                          )}
+                          {sortField !== 'stock' && <ArrowUpDown className="ml-2 h-4 w-4 opacity-50" />}
+                        </Button>
+                      </TableHead>
                       <TableHead>Дії</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {products.map((product) => (
+                    {getSortedProducts().map((product) => (
                       <TableRow key={product.id}>
                         <TableCell>{product.name}</TableCell>
                         <TableCell>{getCategoryName(product.category_id)}</TableCell>
