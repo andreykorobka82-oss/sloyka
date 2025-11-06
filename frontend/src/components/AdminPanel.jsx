@@ -229,11 +229,6 @@ const AdminPanel = ({ user, onLogout }) => {
     setDeleteDialog({ open: true, type: 'product', id: productId, name: productName });
   };
 
-  const getCategoryName = (categoryId) => {
-    const category = categories.find(cat => cat.id === categoryId);
-    return category ? category.name : 'Без категорії';
-  };
-
   if (loading) {
     return (
       <div className="min-h-screen" style={{ backgroundColor: 'var(--bg-primary)' }}>
