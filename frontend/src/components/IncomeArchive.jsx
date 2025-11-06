@@ -174,7 +174,7 @@ const IncomeArchive = ({ user, onLogout }) => {
                             <Button
                               variant="destructive"
                               size="sm"
-                              onClick={() => handleDelete(income.id)}
+                              onClick={() => handleDelete(income.id, income.product_name)}
                               data-testid={`delete-income-${income.id}`}
                             >
                               Видалити
