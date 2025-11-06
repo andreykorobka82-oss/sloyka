@@ -12,6 +12,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
+import { Trash2, Plus, AlertCircle } from 'lucide-react';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
@@ -20,6 +29,7 @@ const ExpensePage = ({ user, onLogout }) => {
   const [products, setProducts] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState('');
   const [quantity, setQuantity] = useState('');
+  const [cart, setCart] = useState([]);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -35,21 +45,100 @@ const ExpensePage = ({ user, onLogout }) => {
     }
   };
 
-  const handleSubmit = async (e) => {
+  const handleAddToCart = (e) => {
     e.preventDefault();
-    setLoading(true);
+    
+    if (!selectedProduct || !quantity || parseFloat(quantity) <= 0) {
+      toast.error('Оберіть товар та введіть кількість');
+      return;
+    }
 
-    try {
-      await axios.post(`${API}/expenses`, {
+    const product = products.find(p => p.id === selectedProduct);
+    if (!product) return;
+
+    // Check stock
+    if (product.current_stock < parseFloat(quantity)) {
+      toast.error(`Недостатньо товару на складі. Доступно: ${product.current_stock}`);
+      return;
+    }
+
+    // Check if product already in cart
+    const existingIndex = cart.findIndex(item => item.product_id === selectedProduct);
+    
+    if (existingIndex >= 0) {
+      // Update quantity
+      const newQuantity = cart[existingIndex].quantity + parseFloat(quantity);
+      if (product.current_stock < newQuantity) {
+        toast.error(`Недостатньо товару на складі. Доступно: ${product.current_stock}`);
+        return;
+      }
+      const updatedCart = [...cart];
+      updatedCart[existingIndex].quantity = newQuantity;
+      setCart(updatedCart);
+      toast.success('Кількість оновлено в списку');
+    } else {
+      // Add new item
+      setCart([...cart, {
         product_id: selectedProduct,
+        product_name: product.name,
         quantity: parseFloat(quantity),
-        user_id: user.id
-      });
-      toast.success('Списання додано');
-      setSelectedProduct('');
-      setQuantity('');
+        current_stock: product.current_stock,
+        price: product.price
+      }]);
+      toast.success('Товар додано до списку');
+    }
+
+    setSelectedProduct('');
+    setQuantity('');
+  };
+
+  const handleRemoveFromCart = (productId) => {
+    setCart(cart.filter(item => item.product_id !== productId));
+    toast.info('Товар видалено зі списку');
+  };
+
+  const handleUpdateQuantity = (productId, newQuantity) => {
+    if (newQuantity <= 0) {
+      handleRemoveFromCart(productId);
+      return;
+    }
+
+    const item = cart.find(i => i.product_id === productId);
+    if (item && newQuantity > item.current_stock) {
+      toast.error(`Недостатньо товару. Доступно: ${item.current_stock}`);
+      return;
+    }
+    
+    const updatedCart = cart.map(item => 
+      item.product_id === productId 
+        ? { ...item, quantity: parseFloat(newQuantity) }
+        : item
+    );
+    setCart(updatedCart);
+  };
+
+  const handleConfirmExpenses = async () => {
+    if (cart.length === 0) {
+      toast.error('Список порожній');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      // Send all expenses
+      for (const item of cart) {
+        await axios.post(`${API}/expenses`, {
+          product_id: item.product_id,
+          quantity: item.quantity,
+          user_id: user.id
+        });
+      }
+      
+      toast.success(`Списання підтверджено: ${cart.length} товар(ів)`);
+      setCart([]);
+      fetchProducts(); // Refresh products to update stock
     } catch (error) {
-      toast.error(error.response?.data?.detail || 'Помилка додавання списання');
+      toast.error(error.response?.data?.detail || 'Помилка підтвердження списання');
     } finally {
       setLoading(false);
     }
