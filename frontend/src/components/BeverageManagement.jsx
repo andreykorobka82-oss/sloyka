@@ -173,6 +173,29 @@ const BeverageManagement = () => {
           ))}
         </TableBody>
       </Table>
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={deleteDialog.open} onOpenChange={(open) => !open && setDeleteDialog({ open: false, id: null, name: '' })}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Підтвердження видалення</AlertDialogTitle>
+            <AlertDialogDescription>
+              Ви впевнені, що хочете видалити напій <strong>"{deleteDialog.name}"</strong>?
+              <br />
+              Цю дію не можна буде скасувати.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Скасувати</AlertDialogCancel>
+            <AlertDialogAction 
+              onClick={confirmDelete}
+              style={{ backgroundColor: 'var(--color-danger)' }}
+            >
+              Видалити
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };
