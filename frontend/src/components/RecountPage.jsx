@@ -277,7 +277,7 @@ const RecountPage = ({ user, onLogout }) => {
                   Результати переобліку ({formatDate(recountData.start_date)} - {formatDate(recountData.end_date)})
                 </CardTitle>
                 <p className="text-sm mt-1" style={{ color: 'var(--color-text)', opacity: 0.7 }}>
-                  Показано товарів: {getFilteredProducts().length} з {recountData.products.length}
+                  Всього товарів: {recountData.products.length}
                 </p>
               </div>
               {user.role === 'admin' && (
