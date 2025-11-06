@@ -662,9 +662,73 @@ async def generate_recount(request: RecountRequest):
         initial_stock = product['current_stock'] - period_incomes + period_expenses
         final_stock = request.final_stocks.get(product_id, product['current_stock'])
         difference = final_stock - initial_stock
-        sale_amount = abs(difference) * product['price'] if difference < 0 else 0
         
         category_name = categories_dict.get(product['category_id'], 'Без категорії')
+        coffee_calc_details = None
+        
+        # Calculate sale amount based on product type
+        if product_type == "weighted_loss":
+            # Вагові товари з втратою 15%
+            actual_sold = abs(difference) * 0.85 if difference < 0 else 0
+            waste = abs(difference) * 0.15 if difference < 0 else 0
+            sale_amount = actual_sold * product['price']
+            coffee_calc_details = {
+                "type": "weighted_loss",
+                "total_loss": abs(difference) if difference < 0 else 0,
+                "actual_sold": actual_sold,
+                "waste_15_percent": waste
+            }
+        elif product_type == "coffee_machine" and request.coffee_machine_data and product_id in request.coffee_machine_data:
+            # Розрахунок через кавомашину
+            machine_data = request.coffee_machine_data[product_id]
+            initial_counter = machine_data.get('initial_counter', 0)
+            final_counter = machine_data.get('final_counter', 0)
+            failed_portions = machine_data.get('failed_portions', 0)
+            beverages_sold = machine_data.get('beverages_sold', {})
+            
+            # 1. Вага проданої кави
+            coffee_sold_weight = abs(difference) if difference < 0 else 0
+            
+            # 2. Загальна кількість порцій
+            total_portions = final_counter - initial_counter - failed_portions
+            
+            if total_portions > 0 and coffee_sold_weight > 0:
+                # 3. Вага кави на одну порцію
+                weight_per_portion = coffee_sold_weight / total_portions
+                
+                # 4. Сума вартості проданих порцій
+                total_beverage_revenue = 0
+                for bev in beverages:
+                    if bev['coffee_product_id'] == product_id:
+                        bev_quantity = beverages_sold.get(bev['id'], 0)
+                        total_beverage_revenue += bev_quantity * bev['price']
+                
+                # 5. Середня вартість 1 порції
+                avg_price_per_portion = total_beverage_revenue / total_portions if total_portions > 0 else 0
+                
+                # 6. Кількість порцій на 1 кг кави
+                portions_per_kg = 1 / weight_per_portion if weight_per_portion > 0 else 0
+                
+                # 7. Вартість продажу 1 кг кави
+                price_per_kg = round(portions_per_kg * avg_price_per_portion)
+                
+                sale_amount = coffee_sold_weight * price_per_kg
+                
+                coffee_calc_details = {
+                    "type": "coffee_machine",
+                    "coffee_sold_weight": coffee_sold_weight,
+                    "total_portions": total_portions,
+                    "weight_per_portion": weight_per_portion,
+                    "avg_price_per_portion": avg_price_per_portion,
+                    "portions_per_kg": portions_per_kg,
+                    "price_per_kg": price_per_kg,
+                    "failed_portions": failed_portions
+                }
+            else:
+                sale_amount = abs(difference) * product['price'] if difference < 0 else 0
+        else:
+            # Звичайний товар
+            sale_amount = abs(difference) * product['price'] if difference < 0 else 0
         
         product_data = RecountProductData(
             product_id=product_id,
@@ -674,7 +738,9 @@ async def generate_recount(request: RecountRequest):
             final_stock=final_stock,
             difference=difference,
             price=product['price'],
-            sale_amount=sale_amount
+            sale_amount=sale_amount,
+            product_type=product_type,
+            coffee_calc_details=coffee_calc_details
         )
         product_data_list.append(product_data)
         
