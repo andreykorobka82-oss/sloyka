@@ -446,8 +446,9 @@ const AdminPanel = ({ user, onLogout }) => {
                             size="sm"
                             onClick={() => handleDeleteProduct(product.id)}
                             data-testid={`delete-product-${product.id}`}
+                            disabled={deletingId === product.id}
                           >
-                            Видалити
+                            {deletingId === product.id ? 'Видалення...' : 'Видалити'}
                           </Button>
                         </TableCell>
                       </TableRow>
