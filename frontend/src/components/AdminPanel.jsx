@@ -320,8 +320,9 @@ const AdminPanel = ({ user, onLogout }) => {
                             size="sm"
                             onClick={() => handleDeleteCategory(cat.id)}
                             data-testid={`delete-category-${cat.id}`}
+                            disabled={deletingId === cat.id}
                           >
-                            Видалити
+                            {deletingId === cat.id ? 'Видалення...' : 'Видалити'}
                           </Button>
                         </TableCell>
                       </TableRow>
