@@ -56,6 +56,7 @@ const AdminPanel = ({ user, onLogout }) => {
   const [newProduct, setNewProduct] = useState({ name: '', category_id: '', price: '', product_type: 'normal' });
   const [editProduct, setEditProduct] = useState(null);
   const [deletingId, setDeletingId] = useState(null);
+  const [deleteDialog, setDeleteDialog] = useState({ open: false, type: '', id: null, name: '' });
 
   useEffect(() => {
     fetchData();
