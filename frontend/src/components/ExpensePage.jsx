@@ -147,59 +147,147 @@ const ExpensePage = ({ user, onLogout }) => {
   return (
     <div className="min-h-screen" style={{ backgroundColor: 'var(--bg-primary)' }}>
       <Navigation user={user} onLogout={onLogout} />
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <Card style={{ backgroundColor: 'var(--bg-secondary)', borderColor: 'var(--color-border)' }} className="shadow-lg">
-          <CardHeader>
-            <CardTitle style={{ color: 'var(--color-heading)' }}>Списання товару</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div>
-                <label className="block text-sm font-medium mb-2" style={{ color: 'var(--color-text)' }}>
-                  Товар
-                </label>
-                <Select value={selectedProduct} onValueChange={setSelectedProduct} required>
-                  <SelectTrigger data-testid="expense-product-select">
-                    <SelectValue placeholder="Оберіть товар" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {products.map((product) => (
-                      <SelectItem key={product.id} value={product.id}>
-                        {product.name} (Залишок: {product.current_stock})
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Add to Cart Form */}
+          <Card style={{ backgroundColor: 'var(--bg-secondary)', borderColor: 'var(--color-border)' }} className="shadow-lg">
+            <CardHeader>
+              <CardTitle style={{ color: 'var(--color-heading)' }}>Додати товар</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <form onSubmit={handleAddToCart} className="space-y-6">
+                <div>
+                  <label className="block text-sm font-medium mb-2" style={{ color: 'var(--color-text)' }}>
+                    Товар
+                  </label>
+                  <Select value={selectedProduct} onValueChange={setSelectedProduct}>
+                    <SelectTrigger data-testid="expense-product-select">
+                      <SelectValue placeholder="Оберіть товар" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {products.map((product) => (
+                        <SelectItem key={product.id} value={product.id}>
+                          {product.name} (Залишок: {product.current_stock})
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
 
-              <div>
-                <label className="block text-sm font-medium mb-2" style={{ color: 'var(--color-text)' }}>
-                  Кількість
-                </label>
-                <Input
-                  data-testid="expense-quantity-input"
-                  type="number"
-                  step="0.01"
-                  min="0.01"
-                  value={quantity}
-                  onChange={(e) => setQuantity(e.target.value)}
-                  placeholder="Введіть кількість"
-                  required
-                />
-              </div>
+                <div>
+                  <label className="block text-sm font-medium mb-2" style={{ color: 'var(--color-text)' }}>
+                    Кількість
+                  </label>
+                  <Input
+                    data-testid="expense-quantity-input"
+                    type="number"
+                    step="0.01"
+                    min="0.01"
+                    value={quantity}
+                    onChange={(e) => setQuantity(e.target.value)}
+                    placeholder="Введіть кількість"
+                  />
+                </div>
 
-              <Button
-                data-testid="submit-expense-button"
-                type="submit"
-                className="w-full"
-                style={{ backgroundColor: 'var(--color-accent)', color: 'white' }}
-                disabled={loading}
-              >
-                {loading ? 'Додавання...' : 'Додати списання'}
-              </Button>
-            </form>
-          </CardContent>
-        </Card>
+                <Button
+                  data-testid="add-to-cart-button"
+                  type="submit"
+                  className="w-full"
+                  style={{ backgroundColor: 'var(--color-accent)', color: 'white' }}
+                >
+                  <Plus className="mr-2 h-4 w-4" />
+                  Додати до списку
+                </Button>
+              </form>
+            </CardContent>
+          </Card>
+
+          {/* Cart Preview */}
+          <Card style={{ backgroundColor: 'var(--bg-secondary)', borderColor: 'var(--color-border)' }} className="shadow-lg">
+            <CardHeader className="flex flex-row items-center justify-between">
+              <CardTitle style={{ color: 'var(--color-heading)' }}>
+                Список списань ({cart.length})
+              </CardTitle>
+              {cart.length > 0 && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setCart([])}
+                  style={{ color: 'var(--color-danger)', borderColor: 'var(--color-danger)' }}
+                  data-testid="clear-cart-button"
+                >
+                  Очистити
+                </Button>
+              )}
+            </CardHeader>
+            <CardContent>
+              {cart.length === 0 ? (
+                <div className="text-center py-8" style={{ color: 'var(--color-text)' }}>
+                  Список порожній. Додайте товари для списання.
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  <div className="overflow-x-auto">
+                    <Table>
+                      <TableHeader>
+                        <TableRow style={{ borderColor: 'var(--color-border)' }}>
+                          <TableHead style={{ color: 'var(--color-heading)' }}>Товар</TableHead>
+                          <TableHead style={{ color: 'var(--color-heading)' }}>Кількість</TableHead>
+                          <TableHead style={{ color: 'var(--color-heading)' }}>Дії</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {cart.map((item) => (
+                          <TableRow key={item.product_id} style={{ borderColor: 'var(--color-border)' }} data-testid={`cart-item-${item.product_id}`}>
+                            <TableCell style={{ color: 'var(--color-text)' }}>
+                              {item.product_name}
+                              <div className="text-xs" style={{ color: 'var(--color-text)', opacity: 0.7 }}>
+                                Доступно: {item.current_stock}
+                              </div>
+                            </TableCell>
+                            <TableCell>
+                              <Input
+                                type="number"
+                                step="0.01"
+                                min="0.01"
+                                max={item.current_stock}
+                                value={item.quantity}
+                                onChange={(e) => handleUpdateQuantity(item.product_id, e.target.value)}
+                                className="w-24"
+                                data-testid={`cart-quantity-${item.product_id}`}
+                              />
+                            </TableCell>
+                            <TableCell>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => handleRemoveFromCart(item.product_id)}
+                                style={{ color: 'var(--color-danger)' }}
+                                data-testid={`remove-cart-${item.product_id}`}
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
+                  
+                  <Button
+                    data-testid="confirm-expenses-button"
+                    onClick={handleConfirmExpenses}
+                    className="w-full"
+                    style={{ backgroundColor: '#10b981', color: 'white' }}
+                    disabled={loading}
+                  >
+                    {loading ? 'Підтвердження...' : `✓ Підтвердити списання (${cart.length})`}
+                  </Button>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </div>
       </div>
     </div>
   );
