@@ -22,6 +22,16 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 import { format } from 'date-fns';
 import { uk } from 'date-fns/locale';
 
@@ -36,6 +46,7 @@ const RevenuePage = ({ user, onLogout }) => {
   const [editRevenue, setEditRevenue] = useState(null);
   const [editDate, setEditDate] = useState(null);
   const [editAmount, setEditAmount] = useState('');
+  const [deleteDialog, setDeleteDialog] = useState({ open: false, id: null, date: '' });
 
   useEffect(() => {
     fetchRevenues();
