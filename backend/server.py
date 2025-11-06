@@ -62,17 +62,39 @@ class Product(BaseModel):
     category_id: str
     price: float
     current_stock: float = 0
+    product_type: str = "normal"  # normal, weighted_loss, coffee_machine
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 class ProductCreate(BaseModel):
     name: str
     category_id: str
     price: float
+    product_type: str = "normal"
 
 class ProductUpdate(BaseModel):
     name: Optional[str] = None
     category_id: Optional[str] = None
     price: Optional[float] = None
+    product_type: Optional[str] = None
+
+class Beverage(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    name: str
+    price: float
+    coffee_product_id: str  # ID товару кави/шоколаду
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+class BeverageCreate(BaseModel):
+    name: str
+    price: float
+    coffee_product_id: str
+
+class CoffeeMachineData(BaseModel):
+    initial_counter: int
+    final_counter: int
+    failed_portions: int
+    beverages_sold: dict  # beverage_id -> quantity
 
 class Income(BaseModel):
     model_config = ConfigDict(extra="ignore")
