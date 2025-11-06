@@ -353,6 +353,16 @@ const AdminPanel = ({ user, onLogout }) => {
                         onChange={(e) => setNewProduct({ ...newProduct, price: e.target.value })}
                         required
                       />
+                      <Select value={newProduct.product_type} onValueChange={(value) => setNewProduct({ ...newProduct, product_type: value })}>
+                        <SelectTrigger data-testid="product-type-select">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="normal">Звичайний товар</SelectItem>
+                          <SelectItem value="weighted_loss">Ваговий (втрата 15%)</SelectItem>
+                          <SelectItem value="coffee_machine">Кавомашина</SelectItem>
+                        </SelectContent>
+                      </Select>
                       <Button type="submit" style={{ backgroundColor: 'var(--color-accent)', color: 'white' }} data-testid="add-product-button">
                         Додати
                       </Button>
