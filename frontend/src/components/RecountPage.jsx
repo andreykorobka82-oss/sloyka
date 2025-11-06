@@ -18,6 +18,8 @@ import {
 import { format } from 'date-fns';
 import { uk } from 'date-fns/locale';
 import CoffeeMachineInput from './CoffeeMachineInput';
+import { Switch } from '@/components/ui/switch';
+import { Label } from '@/components/ui/label';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
