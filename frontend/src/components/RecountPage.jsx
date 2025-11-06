@@ -191,10 +191,10 @@ const RecountPage = ({ user, onLogout }) => {
                 Кінцеві залишки товарів
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {products.map((product) => (
+                {products.filter(p => p.product_type !== 'coffee_machine').map((product) => (
                   <div key={product.id}>
                     <label className="block text-sm font-medium mb-2" style={{ color: 'var(--color-text)' }}>
-                      {product.name}
+                      {product.name} {product.product_type === 'weighted_loss' && <span className="text-xs text-orange-600">(ваг. -15%)</span>}
                     </label>
                     <Input
                       data-testid={`final-stock-${product.id}`}
@@ -210,6 +210,32 @@ const RecountPage = ({ user, onLogout }) => {
                 ))}
               </div>
             </div>
+
+            {/* Coffee Machine Products */}
+            {products.filter(p => p.product_type === 'coffee_machine').map((product) => (
+              <div key={product.id}>
+                <h3 className="text-lg font-semibold mb-2" style={{ color: 'var(--color-heading)' }}>
+                  {product.name} - Кінцевий залишок (кг)
+                </h3>
+                <Input
+                  data-testid={`final-stock-${product.id}`}
+                  type="number"
+                  step="0.01"
+                  value={finalStocks[product.id] || 0}
+                  onChange={(e) => setFinalStocks({
+                    ...finalStocks,
+                    [product.id]: parseFloat(e.target.value) || 0
+                  })}
+                  className="mb-4 max-w-xs"
+                />
+                <CoffeeMachineInput
+                  product={product}
+                  beverages={beverages}
+                  machineData={coffeeMachineData[product.id]}
+                  onDataChange={handleCoffeeMachineDataChange}
+                />
+              </div>
+            ))}
 
             <Button
               data-testid="generate-recount-button"
