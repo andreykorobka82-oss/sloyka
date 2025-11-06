@@ -191,10 +191,11 @@ const AdminPanel = ({ user, onLogout }) => {
           </CardHeader>
           <CardContent>
             <Tabs defaultValue="users" className="w-full">
-              <TabsList className="grid w-full grid-cols-3">
+              <TabsList className="grid w-full grid-cols-4">
                 <TabsTrigger value="users" data-testid="tab-users">Користувачі</TabsTrigger>
                 <TabsTrigger value="categories" data-testid="tab-categories">Категорії</TabsTrigger>
                 <TabsTrigger value="products" data-testid="tab-products">Товари</TabsTrigger>
+                <TabsTrigger value="beverages" data-testid="tab-beverages">Напої</TabsTrigger>
               </TabsList>
 
               {/* Users Tab */}
