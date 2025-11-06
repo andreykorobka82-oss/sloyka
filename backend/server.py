@@ -156,6 +156,7 @@ class RecountRequest(BaseModel):
     start_date: datetime
     end_date: datetime
     final_stocks: dict  # product_id -> final_stock
+    coffee_machine_data: Optional[dict] = None  # product_id -> CoffeeMachineData
 
 class RecountProductData(BaseModel):
     product_id: str
@@ -166,6 +167,8 @@ class RecountProductData(BaseModel):
     difference: float
     price: float
     sale_amount: float
+    product_type: str = "normal"
+    coffee_calc_details: Optional[dict] = None
 
 class RecountResult(BaseModel):
     start_date: datetime
