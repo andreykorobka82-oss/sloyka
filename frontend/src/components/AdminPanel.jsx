@@ -451,6 +451,11 @@ const AdminPanel = ({ user, onLogout }) => {
                   </TableBody>
                 </Table>
               </TabsContent>
+
+              {/* Beverages Tab */}
+              <TabsContent value="beverages" className="space-y-4">
+                <BeverageManagement />
+              </TabsContent>
             </Tabs>
           </CardContent>
         </Card>
