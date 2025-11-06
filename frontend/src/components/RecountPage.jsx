@@ -228,7 +228,8 @@ const RecountPage = ({ user, onLogout }) => {
                       })}
                     />
                   </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
 
