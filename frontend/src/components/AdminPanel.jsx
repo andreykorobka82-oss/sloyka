@@ -156,12 +156,15 @@ const AdminPanel = ({ user, onLogout }) => {
 
   const handleDeleteProduct = async (productId) => {
     if (window.confirm('Ви впевнені, що хочете видалити товар?')) {
+      setDeletingId(productId);
       try {
         await axios.delete(`${API}/products/${productId}`);
         toast.success('Товар видалено');
-        fetchData();
+        await fetchData();
       } catch (error) {
         toast.error('Помилка видалення');
+      } finally {
+        setDeletingId(null);
       }
     }
   };
