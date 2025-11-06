@@ -36,18 +36,41 @@ const RecountPage = ({ user, onLogout }) => {
     fetchData();
   }, []);
 
-  const fetchProducts = async () => {
+  const fetchData = async () => {
     try {
-      const response = await axios.get(`${API}/products`);
-      setProducts(response.data);
+      const [productsRes, beveragesRes] = await Promise.all([
+        axios.get(`${API}/products`),
+        axios.get(`${API}/beverages`)
+      ]);
+      
+      setProducts(productsRes.data);
+      setBeverages(beveragesRes.data);
+      
       const stocks = {};
-      response.data.forEach(product => {
+      const coffeeData = {};
+      productsRes.data.forEach(product => {
         stocks[product.id] = product.current_stock;
+        if (product.product_type === 'coffee_machine') {
+          coffeeData[product.id] = {
+            initial_counter: 0,
+            final_counter: 0,
+            failed_portions: 0,
+            beverages_sold: {}
+          };
+        }
       });
       setFinalStocks(stocks);
+      setCoffeeMachineData(coffeeData);
     } catch (error) {
-      toast.error('Помилка завантаження товарів');
+      toast.error('Помилка завантаження даних');
     }
+  };
+
+  const handleCoffeeMachineDataChange = (productId, data) => {
+    setCoffeeMachineData({
+      ...coffeeMachineData,
+      [productId]: data
+    });
   };
 
   const handleGenerate = async () => {
