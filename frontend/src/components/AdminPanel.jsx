@@ -87,12 +87,15 @@ const AdminPanel = ({ user, onLogout }) => {
 
   const handleDeleteUser = async (userId) => {
     if (window.confirm('Ви впевнені, що хочете видалити користувача?')) {
+      setDeletingId(userId);
       try {
         await axios.delete(`${API}/users/${userId}`);
         toast.success('Користувача видалено');
-        fetchData();
+        await fetchData();
       } catch (error) {
         toast.error('Помилка видалення');
+      } finally {
+        setDeletingId(null);
       }
     }
   };
