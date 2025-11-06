@@ -115,12 +115,15 @@ const AdminPanel = ({ user, onLogout }) => {
 
   const handleDeleteCategory = async (categoryId) => {
     if (window.confirm('Ви впевнені, що хочете видалити категорію?')) {
+      setDeletingId(categoryId);
       try {
         await axios.delete(`${API}/categories/${categoryId}`);
         toast.success('Категорію видалено');
-        fetchData();
+        await fetchData();
       } catch (error) {
         toast.error('Помилка видалення');
+      } finally {
+        setDeletingId(null);
       }
     }
   };
