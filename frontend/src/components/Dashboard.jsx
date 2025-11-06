@@ -34,7 +34,7 @@ const Dashboard = ({ user, onLogout }) => {
     return () => clearInterval(interval);
   }, []);
 
-  const fetchData = async () => {
+  const fetchData = async (silent = false) => {
     try {
       const [productsRes, categoriesRes] = await Promise.all([
         axios.get(`${API}/products/in-stock`),
@@ -42,11 +42,22 @@ const Dashboard = ({ user, onLogout }) => {
       ]);
       setProducts(productsRes.data);
       setCategories(categoriesRes.data);
+      setLastUpdated(new Date());
+      if (!silent) {
+        setLoading(false);
+      }
     } catch (error) {
-      toast.error('Помилка завантаження даних');
-    } finally {
-      setLoading(false);
+      if (!silent) {
+        toast.error('Помилка завантаження даних');
+        setLoading(false);
+      }
     }
+  };
+
+  const handleRefresh = () => {
+    setLoading(true);
+    fetchData();
+    toast.success('Дані оновлено');
   };
 
   const getCategoryName = (categoryId) => {
