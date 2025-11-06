@@ -163,7 +163,7 @@ const BeverageManagement = () => {
                 <Button
                   variant="destructive"
                   size="sm"
-                  onClick={() => handleDelete(beverage.id)}
+                  onClick={() => handleDelete(beverage.id, beverage.name)}
                   data-testid={`delete-beverage-${beverage.id}`}
                 >
                   Видалити
