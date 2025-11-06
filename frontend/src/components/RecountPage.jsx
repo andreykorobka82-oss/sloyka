@@ -17,6 +17,7 @@ import {
 } from '@/components/ui/table';
 import { format } from 'date-fns';
 import { uk } from 'date-fns/locale';
+import CoffeeMachineInput from './CoffeeMachineInput';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
@@ -25,12 +26,14 @@ const RecountPage = ({ user, onLogout }) => {
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
   const [products, setProducts] = useState([]);
+  const [beverages, setBeverages] = useState([]);
   const [finalStocks, setFinalStocks] = useState({});
+  const [coffeeMachineData, setCoffeeMachineData] = useState({});
   const [recountData, setRecountData] = useState(null);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    fetchProducts();
+    fetchData();
   }, []);
 
   const fetchProducts = async () => {
