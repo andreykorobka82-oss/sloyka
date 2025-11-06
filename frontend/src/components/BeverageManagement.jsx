@@ -76,15 +76,20 @@ const BeverageManagement = () => {
     }
   };
 
-  const handleDelete = async (beverageId) => {
-    if (window.confirm('Ви впевнені, що хочете видалити напій?')) {
-      try {
-        await axios.delete(`${API}/beverages/${beverageId}`);
-        toast.success('Напій видалено');
-        fetchData();
-      } catch (error) {
-        toast.error('Помилка видалення');
-      }
+  const handleDelete = (beverageId, beverageName) => {
+    setDeleteDialog({ open: true, id: beverageId, name: beverageName });
+  };
+
+  const confirmDelete = async () => {
+    const { id } = deleteDialog;
+    setDeleteDialog({ open: false, id: null, name: '' });
+    
+    try {
+      await axios.delete(`${API}/beverages/${id}`);
+      toast.success('Напій видалено');
+      fetchData();
+    } catch (error) {
+      toast.error('Помилка видалення');
     }
   };
 
