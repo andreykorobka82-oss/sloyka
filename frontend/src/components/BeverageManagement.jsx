@@ -19,6 +19,16 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
@@ -28,6 +38,7 @@ const BeverageManagement = () => {
   const [products, setProducts] = useState([]);
   const [coffeeProducts, setCoffeeProducts] = useState([]);
   const [newBeverage, setNewBeverage] = useState({ name: '', price: '', coffee_product_id: '' });
+  const [deleteDialog, setDeleteDialog] = useState({ open: false, id: null, name: '' });
 
   useEffect(() => {
     fetchData();
