@@ -268,9 +268,14 @@ const RecountPage = ({ user, onLogout }) => {
         {recountData && (
           <Card style={{ backgroundColor: 'var(--bg-secondary)', borderColor: 'var(--color-border)' }} className="shadow-lg">
             <CardHeader className="flex flex-row items-center justify-between">
-              <CardTitle style={{ color: 'var(--color-heading)' }}>
-                Результати переобліку ({formatDate(recountData.start_date)} - {formatDate(recountData.end_date)})
-              </CardTitle>
+              <div>
+                <CardTitle style={{ color: 'var(--color-heading)' }}>
+                  Результати переобліку ({formatDate(recountData.start_date)} - {formatDate(recountData.end_date)})
+                </CardTitle>
+                <p className="text-sm mt-1" style={{ color: 'var(--color-text)', opacity: 0.7 }}>
+                  Показано товарів: {getFilteredProducts().length} з {recountData.products.length}
+                </p>
+              </div>
               {user.role === 'admin' && (
                 <Button
                   data-testid="export-excel-button"
