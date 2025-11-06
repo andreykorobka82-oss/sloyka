@@ -320,7 +320,7 @@ const AdminPanel = ({ user, onLogout }) => {
                           <Button
                             variant="destructive"
                             size="sm"
-                            onClick={() => handleDeleteCategory(cat.id)}
+                            onClick={() => handleDeleteCategory(cat.id, cat.name)}
                             data-testid={`delete-category-${cat.id}`}
                             disabled={deletingId === cat.id}
                           >
