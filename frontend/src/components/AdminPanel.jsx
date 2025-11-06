@@ -42,7 +42,7 @@ const AdminPanel = ({ user, onLogout }) => {
   // Form states
   const [newUser, setNewUser] = useState({ name: '', pin: '', role: 'user' });
   const [newCategory, setNewCategory] = useState({ name: '' });
-  const [newProduct, setNewProduct] = useState({ name: '', category_id: '', price: '' });
+  const [newProduct, setNewProduct] = useState({ name: '', category_id: '', price: '', product_type: 'normal' });
   const [editProduct, setEditProduct] = useState(null);
 
   useEffect(() => {
