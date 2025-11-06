@@ -94,15 +94,20 @@ const RevenuePage = ({ user, onLogout }) => {
     }
   };
 
-  const handleDelete = async (revenueId) => {
-    if (window.confirm('Ви впевнені, що хочете видалити цю виручку?')) {
-      try {
-        await axios.delete(`${API}/revenues/${revenueId}`);
-        toast.success('Виручку видалено');
-        fetchRevenues();
-      } catch (error) {
-        toast.error('Помилка видалення');
-      }
+  const handleDelete = (revenueId, revenueDate) => {
+    setDeleteDialog({ open: true, id: revenueId, date: revenueDate });
+  };
+
+  const confirmDelete = async () => {
+    const { id } = deleteDialog;
+    setDeleteDialog({ open: false, id: null, date: '' });
+    
+    try {
+      await axios.delete(`${API}/revenues/${id}`);
+      toast.success('Виручку видалено');
+      fetchRevenues();
+    } catch (error) {
+      toast.error('Помилка видалення');
     }
   };
 
