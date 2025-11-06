@@ -337,6 +337,45 @@ async def delete_product(product_id: str):
         raise HTTPException(status_code=404, detail="Товар не знайдено")
     return {"message": "Товар видалено"}
 
+# ============ Beverage Routes ============
+
+@api_router.get("/beverages", response_model=List[Beverage])
+async def get_beverages():
+    beverages = await db.beverages.find({}, {"_id": 0}).to_list(1000)
+    for bev in beverages:
+        if isinstance(bev['created_at'], str):
+            bev['created_at'] = datetime.fromisoformat(bev['created_at'])
+    return beverages
+
+@api_router.post("/beverages", response_model=Beverage)
+async def create_beverage(input: BeverageCreate):
+    beverage = Beverage(**input.model_dump())
+    doc = beverage.model_dump()
+    doc['created_at'] = doc['created_at'].isoformat()
+    await db.beverages.insert_one(doc)
+    return beverage
+
+@api_router.put("/beverages/{beverage_id}", response_model=Beverage)
+async def update_beverage(beverage_id: str, input: BeverageCreate):
+    result = await db.beverages.update_one(
+        {"id": beverage_id},
+        {"$set": input.model_dump()}
+    )
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Напій не знайдено")
+    
+    beverage = await db.beverages.find_one({"id": beverage_id}, {"_id": 0})
+    if isinstance(beverage['created_at'], str):
+        beverage['created_at'] = datetime.fromisoformat(beverage['created_at'])
+    return beverage
+
+@api_router.delete("/beverages/{beverage_id}")
+async def delete_beverage(beverage_id: str):
+    result = await db.beverages.delete_one({"id": beverage_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Напій не знайдено")
+    return {"message": "Напій видалено"}
+
 # ============ Income Routes ============
 
 @api_router.get("/incomes", response_model=List[Income])
