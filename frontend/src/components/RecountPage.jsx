@@ -127,18 +127,6 @@ const RecountPage = ({ user, onLogout }) => {
     });
   };
 
-  const getFilteredProducts = () => {
-    if (!recountData) return [];
-    
-    if (hideZeroStock) {
-      return recountData.products.filter(
-        product => product.initial_stock !== 0 || product.final_stock !== 0
-      );
-    }
-    
-    return recountData.products;
-  };
-
   return (
     <div className="min-h-screen" style={{ backgroundColor: 'var(--bg-primary)' }}>
       <Navigation user={user} onLogout={onLogout} />
