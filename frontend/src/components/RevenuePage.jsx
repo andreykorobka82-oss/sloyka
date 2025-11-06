@@ -275,7 +275,7 @@ const RevenuePage = ({ user, onLogout }) => {
                               <Button
                                 variant="destructive"
                                 size="sm"
-                                onClick={() => handleDelete(revenue.id)}
+                                onClick={() => handleDelete(revenue.id, formatDate(revenue.date))}
                                 data-testid={`delete-revenue-${revenue.id}`}
                               >
                                 Видалити
