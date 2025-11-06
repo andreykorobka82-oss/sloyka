@@ -31,6 +31,7 @@ const RecountPage = ({ user, onLogout }) => {
   const [coffeeMachineData, setCoffeeMachineData] = useState({});
   const [recountData, setRecountData] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [hideZeroStock, setHideZeroStock] = useState(false);
 
   useEffect(() => {
     fetchData();
