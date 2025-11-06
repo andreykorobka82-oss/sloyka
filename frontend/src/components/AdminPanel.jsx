@@ -96,18 +96,31 @@ const AdminPanel = ({ user, onLogout }) => {
     }
   };
 
-  const handleDeleteUser = async (userId) => {
-    if (window.confirm('Ви впевнені, що хочете видалити користувача?')) {
-      setDeletingId(userId);
-      try {
-        await axios.delete(`${API}/users/${userId}`);
+  const handleDeleteUser = async (userId, userName) => {
+    setDeleteDialog({ open: true, type: 'user', id: userId, name: userName });
+  };
+
+  const confirmDelete = async () => {
+    const { type, id } = deleteDialog;
+    setDeletingId(id);
+    setDeleteDialog({ open: false, type: '', id: null, name: '' });
+
+    try {
+      if (type === 'user') {
+        await axios.delete(`${API}/users/${id}`);
         toast.success('Користувача видалено');
-        await fetchData();
-      } catch (error) {
-        toast.error('Помилка видалення');
-      } finally {
-        setDeletingId(null);
+      } else if (type === 'category') {
+        await axios.delete(`${API}/categories/${id}`);
+        toast.success('Категорію видалено');
+      } else if (type === 'product') {
+        await axios.delete(`${API}/products/${id}`);
+        toast.success('Товар видалено');
       }
+      await fetchData();
+    } catch (error) {
+      toast.error('Помилка видалення');
+    } finally {
+      setDeletingId(null);
     }
   };
 
