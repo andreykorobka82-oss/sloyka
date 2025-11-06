@@ -282,17 +282,53 @@ const RecountPage = ({ user, onLogout }) => {
                   </TableHeader>
                   <TableBody>
                     {recountData.products.map((product) => (
-                      <TableRow key={product.product_id} style={{ borderColor: 'var(--color-border)' }} data-testid={`recount-product-${product.product_id}`}>
-                        <TableCell style={{ color: 'var(--color-text)' }}>{product.product_name}</TableCell>
-                        <TableCell style={{ color: 'var(--color-text)' }}>{product.category_name}</TableCell>
-                        <TableCell style={{ color: 'var(--color-text)' }}>{product.initial_stock.toFixed(2)}</TableCell>
-                        <TableCell style={{ color: 'var(--color-text)' }}>{product.final_stock.toFixed(2)}</TableCell>
-                        <TableCell style={{ color: product.difference < 0 ? 'var(--color-danger)' : 'var(--color-text)' }}>
-                          {product.difference.toFixed(2)}
-                        </TableCell>
-                        <TableCell style={{ color: 'var(--color-text)' }}>{product.price.toFixed(2)} грн</TableCell>
-                        <TableCell style={{ color: 'var(--color-text)' }}>{product.sale_amount.toFixed(2)} грн</TableCell>
-                      </TableRow>
+                      <>
+                        <TableRow key={product.product_id} style={{ borderColor: 'var(--color-border)' }} data-testid={`recount-product-${product.product_id}`}>
+                          <TableCell style={{ color: 'var(--color-text)' }}>
+                            {product.product_name}
+                            {product.product_type === 'weighted_loss' && <span className="ml-2 text-xs text-orange-600">(ваг.)</span>}
+                            {product.product_type === 'coffee_machine' && <span className="ml-2 text-xs text-blue-600">(кава)</span>}
+                          </TableCell>
+                          <TableCell style={{ color: 'var(--color-text)' }}>{product.category_name}</TableCell>
+                          <TableCell style={{ color: 'var(--color-text)' }}>{product.initial_stock.toFixed(2)}</TableCell>
+                          <TableCell style={{ color: 'var(--color-text)' }}>{product.final_stock.toFixed(2)}</TableCell>
+                          <TableCell style={{ color: product.difference < 0 ? 'var(--color-danger)' : 'var(--color-text)' }}>
+                            {product.difference.toFixed(2)}
+                          </TableCell>
+                          <TableCell style={{ color: 'var(--color-text)' }}>
+                            {product.product_type === 'coffee_machine' && product.coffee_calc_details 
+                              ? `${product.coffee_calc_details.price_per_kg} грн/кг`
+                              : `${product.price.toFixed(2)} грн`
+                            }
+                          </TableCell>
+                          <TableCell style={{ color: 'var(--color-text)' }}>{product.sale_amount.toFixed(2)} грн</TableCell>
+                        </TableRow>
+                        {product.coffee_calc_details && product.coffee_calc_details.type === 'coffee_machine' && (
+                          <TableRow key={`${product.product_id}-details`} style={{ backgroundColor: '#f9fafb' }}>
+                            <TableCell colSpan={7} className="text-xs" style={{ color: 'var(--color-text)' }}>
+                              <div className="p-2 space-y-1">
+                                <div><strong>Розрахунок кавомашини:</strong></div>
+                                <div>• Вага проданої кави: {product.coffee_calc_details.coffee_sold_weight.toFixed(2)} кг</div>
+                                <div>• Загальна кількість порцій: {product.coffee_calc_details.total_portions}</div>
+                                <div>• Вага на порцію: {product.coffee_calc_details.weight_per_portion.toFixed(4)} кг</div>
+                                <div>• Порцій на 1 кг: {product.coffee_calc_details.portions_per_kg.toFixed(2)}</div>
+                                <div>• Середня ціна порції: {product.coffee_calc_details.avg_price_per_portion.toFixed(2)} грн</div>
+                                <div>• Списано невдалих: {product.coffee_calc_details.failed_portions}</div>
+                              </div>
+                            </TableCell>
+                          </TableRow>
+                        )}
+                        {product.coffee_calc_details && product.coffee_calc_details.type === 'weighted_loss' && (
+                          <TableRow key={`${product.product_id}-details`} style={{ backgroundColor: '#fef3c7' }}>
+                            <TableCell colSpan={7} className="text-xs" style={{ color: 'var(--color-text)' }}>
+                              <div className="p-2">
+                                <strong>Ваговий товар:</strong> Продано {product.coffee_calc_details.actual_sold.toFixed(2)} кг, 
+                                відходи 15% = {product.coffee_calc_details.waste_15_percent.toFixed(2)} кг
+                              </div>
+                            </TableCell>
+                          </TableRow>
+                        )}
+                      </>
                     ))}
                   </TableBody>
                 </Table>
