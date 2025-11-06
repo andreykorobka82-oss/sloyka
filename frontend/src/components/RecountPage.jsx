@@ -270,6 +270,19 @@ const RecountPage = ({ user, onLogout }) => {
               )}
             </CardHeader>
             <CardContent>
+              {/* Filter Controls */}
+              <div className="flex items-center space-x-2 mb-4" data-testid="filter-controls">
+                <Switch
+                  id="hide-zero-stock"
+                  checked={hideZeroStock}
+                  onCheckedChange={setHideZeroStock}
+                  data-testid="hide-zero-stock-toggle"
+                />
+                <Label htmlFor="hide-zero-stock" className="cursor-pointer" style={{ color: 'var(--color-text)' }}>
+                  Приховати товари з нульовими залишками
+                </Label>
+              </div>
+
               <div className="overflow-x-auto mb-6">
                 <Table>
                   <TableHeader>
