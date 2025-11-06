@@ -305,14 +305,7 @@ const RecountPage = ({ user, onLogout }) => {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {getFilteredProducts().length === 0 ? (
-                      <TableRow>
-                        <TableCell colSpan={7} className="text-center py-8" style={{ color: 'var(--color-text)' }}>
-                          Немає товарів для відображення
-                        </TableCell>
-                      </TableRow>
-                    ) : (
-                      getFilteredProducts().map((product) => (
+                    {recountData.products.map((product) => (
                       <>
                         <TableRow key={product.product_id} style={{ borderColor: 'var(--color-border)' }} data-testid={`recount-product-${product.product_id}`}>
                           <TableCell style={{ color: 'var(--color-text)' }}>
