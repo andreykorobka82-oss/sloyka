@@ -70,15 +70,20 @@ const IncomeArchive = ({ user, onLogout }) => {
     }
   };
 
-  const handleDelete = async (incomeId) => {
-    if (window.confirm('Ви впевнені, що хочете видалити це надходження?')) {
-      try {
-        await axios.delete(`${API}/incomes/${incomeId}`);
-        toast.success('Надходження видалено');
-        fetchIncomes();
-      } catch (error) {
-        toast.error('Помилка видалення');
-      }
+  const handleDelete = (incomeId, incomeName) => {
+    setDeleteDialog({ open: true, id: incomeId, name: incomeName });
+  };
+
+  const confirmDelete = async () => {
+    const { id } = deleteDialog;
+    setDeleteDialog({ open: false, id: null, name: '' });
+    
+    try {
+      await axios.delete(`${API}/incomes/${id}`);
+      toast.success('Надходження видалено');
+      fetchIncomes();
+    } catch (error) {
+      toast.error('Помилка видалення');
     }
   };
 
