@@ -20,6 +20,16 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
@@ -29,6 +39,7 @@ const ExpenseArchive = ({ user, onLogout }) => {
   const [loading, setLoading] = useState(true);
   const [editExpense, setEditExpense] = useState(null);
   const [editQuantity, setEditQuantity] = useState('');
+  const [deleteDialog, setDeleteDialog] = useState({ open: false, id: null, name: '' });
 
   useEffect(() => {
     fetchExpenses();
