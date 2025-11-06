@@ -3,6 +3,7 @@ import axios from 'axios';
 import { toast } from 'sonner';
 import Navigation from './Navigation';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import {
   Table,
   TableBody,
@@ -11,6 +12,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
+import { RefreshCw } from 'lucide-react';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
@@ -19,9 +21,17 @@ const Dashboard = ({ user, onLogout }) => {
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [lastUpdated, setLastUpdated] = useState(new Date());
 
   useEffect(() => {
     fetchData();
+    
+    // Auto-refresh every 30 seconds for multi-user support
+    const interval = setInterval(() => {
+      fetchData(true);
+    }, 30000);
+
+    return () => clearInterval(interval);
   }, []);
 
   const fetchData = async () => {
