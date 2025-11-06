@@ -79,7 +79,8 @@ const RecountPage = ({ user, onLogout }) => {
       const response = await axios.post(`${API}/recount/generate`, {
         start_date: startDate.toISOString(),
         end_date: endDate.toISOString(),
-        final_stocks: finalStocks
+        final_stocks: finalStocks,
+        coffee_machine_data: coffeeMachineData
       });
       setRecountData(response.data);
       toast.success('Звіт згенеровано');
@@ -95,7 +96,8 @@ const RecountPage = ({ user, onLogout }) => {
       const response = await axios.post(`${API}/recount/export`, {
         start_date: startDate.toISOString(),
         end_date: endDate.toISOString(),
-        final_stocks: finalStocks
+        final_stocks: finalStocks,
+        coffee_machine_data: coffeeMachineData
       }, {
         responseType: 'blob'
       });
