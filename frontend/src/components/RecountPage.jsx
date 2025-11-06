@@ -364,7 +364,8 @@ const RecountPage = ({ user, onLogout }) => {
                           </TableRow>
                         )}
                       </>
-                    ))}
+                    ))
+                    )}
                   </TableBody>
                 </Table>
               </div>
