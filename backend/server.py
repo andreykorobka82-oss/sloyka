@@ -618,10 +618,11 @@ async def delete_revenue(revenue_id: str):
 
 @api_router.post("/recount/generate", response_model=RecountResult)
 async def generate_recount(request: RecountRequest):
-    # Get all products
+    # Get all products and beverages
     products = await db.products.find({}, {"_id": 0}).to_list(1000)
     categories = await db.categories.find({}, {"_id": 0}).to_list(1000)
     categories_dict = {cat['id']: cat['name'] for cat in categories}
+    beverages = await db.beverages.find({}, {"_id": 0}).to_list(1000)
     
     # Calculate total revenue for the period
     revenues = await db.revenues.find({}, {"_id": 0}).to_list(1000)
@@ -641,6 +642,7 @@ async def generate_recount(request: RecountRequest):
     
     for product in products:
         product_id = product['id']
+        product_type = product.get('product_type', 'normal')
         
         # Calculate initial stock (current - incomes + expenses during period)
         period_incomes = sum(
