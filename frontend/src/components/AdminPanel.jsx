@@ -270,7 +270,7 @@ const AdminPanel = ({ user, onLogout }) => {
                           <Button
                             variant="destructive"
                             size="sm"
-                            onClick={() => handleDeleteUser(u.id)}
+                            onClick={() => handleDeleteUser(u.id, u.name)}
                             data-testid={`delete-user-${u.id}`}
                             disabled={deletingId === u.id}
                           >
