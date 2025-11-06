@@ -210,10 +210,12 @@ const RecountPage = ({ user, onLogout }) => {
                 {products
                   .filter(p => p.product_type !== 'coffee_machine')
                   .filter(p => !hideZeroStock || p.current_stock > 0)
-                  .map((product) => (
+                  .map((product) => {
+                    const isWeighted = product.product_type === 'weighted_loss' || product.name.includes('(ваг.)');
+                    return (
                   <div key={product.id}>
                     <label className="block text-sm font-medium mb-2" style={{ color: 'var(--color-text)' }}>
-                      {product.name} {product.product_type === 'weighted_loss' && <span className="text-xs text-orange-600">(ваг. -15%)</span>}
+                      {product.name} {isWeighted && <span className="text-xs text-orange-600">(ваг. -15%)</span>}
                     </label>
                     <Input
                       data-testid={`final-stock-${product.id}`}
