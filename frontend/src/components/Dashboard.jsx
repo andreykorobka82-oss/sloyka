@@ -70,8 +70,23 @@ const Dashboard = ({ user, onLogout }) => {
       <Navigation user={user} onLogout={onLogout} />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <Card style={{ backgroundColor: 'var(--bg-secondary)', borderColor: 'var(--color-border)' }} className="shadow-lg">
-          <CardHeader>
-            <CardTitle style={{ color: 'var(--color-heading)' }}>Товари в наявності</CardTitle>
+          <CardHeader className="flex flex-row items-center justify-between">
+            <div>
+              <CardTitle style={{ color: 'var(--color-heading)' }}>Товари в наявності</CardTitle>
+              <p className="text-xs mt-1" style={{ color: 'var(--color-text)', opacity: 0.7 }}>
+                Оновлено: {lastUpdated.toLocaleTimeString('uk-UA')} (автооновлення кожні 30 сек)
+              </p>
+            </div>
+            <Button
+              onClick={handleRefresh}
+              variant="outline"
+              size="sm"
+              disabled={loading}
+              data-testid="refresh-button"
+            >
+              <RefreshCw className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
+              Оновити
+            </Button>
           </CardHeader>
           <CardContent>
             {loading ? (
