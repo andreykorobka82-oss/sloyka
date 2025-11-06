@@ -70,15 +70,20 @@ const ExpenseArchive = ({ user, onLogout }) => {
     }
   };
 
-  const handleDelete = async (expenseId) => {
-    if (window.confirm('Ви впевнені, що хочете видалити це списання?')) {
-      try {
-        await axios.delete(`${API}/expenses/${expenseId}`);
-        toast.success('Списання видалено');
-        fetchExpenses();
-      } catch (error) {
-        toast.error('Помилка видалення');
-      }
+  const handleDelete = (expenseId, expenseName) => {
+    setDeleteDialog({ open: true, id: expenseId, name: expenseName });
+  };
+
+  const confirmDelete = async () => {
+    const { id } = deleteDialog;
+    setDeleteDialog({ open: false, id: null, name: '' });
+    
+    try {
+      await axios.delete(`${API}/expenses/${id}`);
+      toast.success('Списання видалено');
+      fetchExpenses();
+    } catch (error) {
+      toast.error('Помилка видалення');
     }
   };
 
