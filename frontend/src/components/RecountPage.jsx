@@ -190,46 +190,62 @@ const RecountPage = ({ user, onLogout }) => {
             </div>
 
             <div>
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-semibold" style={{ color: 'var(--color-heading)' }}>
-                  Кінцеві залишки товарів
-                </h3>
-                <div className="flex items-center space-x-2">
-                  <Switch
-                    id="hide-zero-input"
-                    checked={hideZeroStock}
-                    onCheckedChange={setHideZeroStock}
-                    data-testid="hide-zero-stock-toggle"
-                  />
-                  <Label htmlFor="hide-zero-input" className="cursor-pointer text-sm" style={{ color: 'var(--color-text)' }}>
-                    Приховати нульові залишки
-                  </Label>
-                </div>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {products
-                  .filter(p => p.product_type !== 'coffee_machine')
-                  .filter(p => !hideZeroStock || p.current_stock > 0)
-                  .map((product) => {
-                    const isWeighted = product.product_type === 'weighted_loss' || product.name.includes('(ваг.)');
-                    return (
-                  <div key={product.id}>
-                    <label className="block text-sm font-medium mb-2" style={{ color: 'var(--color-text)' }}>
-                      {product.name} {isWeighted && <span className="text-xs text-orange-600">(ваг. -15%)</span>}
-                    </label>
-                    <Input
-                      data-testid={`final-stock-${product.id}`}
-                      type="number"
-                      step="0.01"
-                      value={finalStocks[product.id] || 0}
-                      onChange={(e) => setFinalStocks({
-                        ...finalStocks,
-                        [product.id]: parseFloat(e.target.value) || 0
+              <h3 className="text-lg font-semibold mb-4" style={{ color: 'var(--color-heading)' }}>
+                Залишки товарів
+              </h3>
+              <div className="overflow-x-auto">
+                <Table>
+                  <TableHeader>
+                    <TableRow style={{ borderColor: 'var(--color-border)' }}>
+                      <TableHead style={{ color: 'var(--color-heading)' }}>Назва</TableHead>
+                      <TableHead style={{ color: 'var(--color-heading)' }}>Початковий залишок</TableHead>
+                      <TableHead style={{ color: 'var(--color-heading)' }}>Кінцевий залишок</TableHead>
+                      <TableHead style={{ color: 'var(--color-heading)' }}>Різниця</TableHead>
+                      <TableHead style={{ color: 'var(--color-heading)' }}>Сума</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {products
+                      .filter(p => p.product_type !== 'coffee_machine')
+                      .map((product) => {
+                        const isWeighted = product.product_type === 'weighted_loss' || product.name.includes('(ваг.)');
+                        const initialStock = product.current_stock;
+                        const finalStock = finalStocks[product.id] || 0;
+                        const difference = initialStock - finalStock;
+                        const sum = Math.abs(difference) * product.price;
+                        
+                        return (
+                          <TableRow key={product.id} style={{ borderColor: 'var(--color-border)' }}>
+                            <TableCell style={{ color: 'var(--color-text)' }}>
+                              {product.name} {isWeighted && <span className="text-xs text-orange-600">(ваг. -15%)</span>}
+                            </TableCell>
+                            <TableCell style={{ color: 'var(--color-text)' }}>
+                              {initialStock.toFixed(2)}
+                            </TableCell>
+                            <TableCell>
+                              <Input
+                                data-testid={`final-stock-${product.id}`}
+                                type="number"
+                                step="0.01"
+                                value={finalStock}
+                                onChange={(e) => setFinalStocks({
+                                  ...finalStocks,
+                                  [product.id]: parseFloat(e.target.value) || 0
+                                })}
+                                className="w-32"
+                              />
+                            </TableCell>
+                            <TableCell style={{ color: difference < 0 ? 'var(--color-danger)' : 'var(--color-text)' }}>
+                              {difference.toFixed(2)}
+                            </TableCell>
+                            <TableCell style={{ color: 'var(--color-text)' }}>
+                              {sum.toFixed(2)} грн
+                            </TableCell>
+                          </TableRow>
+                        );
                       })}
-                    />
-                  </div>
-                  );
-                })}
+                  </TableBody>
+                </Table>
               </div>
             </div>
 
