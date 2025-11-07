@@ -41,8 +41,8 @@ const CoffeeMachineInput = ({ product, beverages, machineData, onDataChange }) =
 
   const calculateBeverageStats = (beverage) => {
     const data = getBeverageData(beverage.id);
-    const difference = (data.final || 0) - (data.initial || 0) - (data.failed || 0);
-    const sum = difference * beverage.price;
+    const difference = (data.initial || 0) - (data.final || 0) - (data.failed || 0);
+    const sum = Math.abs(difference) * beverage.price;
     return { difference, sum };
   };
 
